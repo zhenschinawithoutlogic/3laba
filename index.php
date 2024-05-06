@@ -1,75 +1,38 @@
 <?php
-// Загрузка данных из файла CSV
-$data = array_map('str_getcsv', file('titanic.csv'));
-$columns = array_shift($data);
-$passengers = array();
-foreach ($data as $row) {
-    $passengers[] = array_combine($columns, $row);
+#Задание 1
+if(isset($_GET['info'])){
+    $info = $_GET['info'];
+    echo $info;
 }
-
-// Поиск пассажиров по возрасту
-function searchByAge($passengers, $age) {
-    $results = array();
-    foreach ($passengers as $passenger) {
-        if ($passenger['Age'] == $age) {
-            $results[] = $passenger;
-        }
+#Задание 2
+elseif (isset($_GET['num'])) {
+    $num = $_GET['num'];
+    if($num > 1000){
+        echo 'Число должно быть меньше 1000';
+        exit;
     }
-    return $results;
-}
-
-// Поиск пассажиров по имени с использованием регулярного выражения
-function searchByName($passengers, $name) {
-    $results = array();
-    foreach ($passengers as $passenger) {
-        if (preg_match("/$name/i", $passenger['Name'])) {
-            $results[] = $passenger;
+    function isPrime($n) {
+        if ($n <= 1) {
+          return false;
         }
+        for ($i = 2; $i <= sqrt($n); $i++) {
+          if ($n % $i === 0) {
+            return false;
+          }
+        }
+        return true;
+      }
+    
+      $primeNumbers = [];
+      for ($i = 2; $i <= $num; $i++) {
+        if (isPrime($i)) {
+          $primeNumbers[] = $i;
+        }
+      }
+    
+      echo "Массив простых чисел: " . implode(", ", $primeNumbers);
+    } else {
+      echo "Не переданы параметры в URL.";
     }
-    return $results;
-}
 
-// Получение параметров запроса
-$age = isset($_GET['age']) ? $_GET['age'] : '';
-$name = isset($_GET['name']) ? $_GET['name'] : '';
-
-// Выполнение поиска
-if (!empty($age)) {
-    $results = searchByAge($passengers, $age);
-} elseif (!empty($name)) {
-    $results = searchByName($passengers, $name);
-} else {
-    $results = $passengers;
-}
-
-// Создание HTML-страницы с результатами
-$html = '<html>
-<head>
-    <title>Результаты поиска пассажиров</title>
-</head>
-<body>
-    <h1>Результаты поиска пассажиров</h1>
-    <table>
-        <tr>
-            <th>Имя</th>
-            <th>Возраст</th>
-            <th>Пол</th>
-            <th>Класс</th>
-            <th>Выжил</th>
-        </tr>';
-foreach ($results as $result) {
-    $html .= '<tr>
-                <td>'.$result['Name'].'</td>
-                <td>'.$result['Age'].'</td>
-                <td>'.$result['Sex'].'</td>
-                <td>'.$result['Pclass'].'</td>
-                <td>'.$result['Survived'].'</td>
-            </tr>';
-}
-$html .= '</table>
-</body>
-</html>';
-
-// Вывод HTML-страницы
-echo $html;
 ?>
