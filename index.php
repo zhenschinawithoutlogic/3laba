@@ -1,38 +1,47 @@
-<?php
-#Задание 1
-if(isset($_GET['info'])){
-    $info = $_GET['info'];
-    echo $info;
-}
-#Задание 2
-elseif (isset($_GET['num'])) {
-    $num = $_GET['num'];
-    if($num > 1000){
-        echo 'Число должно быть меньше 1000';
-        exit;
-    }
-    function isPrime($n) {
-        if ($n <= 1) {
-          return false;
-        }
-        for ($i = 2; $i <= sqrt($n); $i++) {
-          if ($n % $i === 0) {
-            return false;
-          }
-        }
-        return true;
-      }
-    
-      $primeNumbers = [];
-      for ($i = 2; $i <= $num; $i++) {
-        if (isPrime($i)) {
-          $primeNumbers[] = $i;
-        }
-      }
-    
-      echo "Массив простых чисел: " . implode(", ", $primeNumbers);
-    } else {
-      echo "Не переданы параметры в URL.";
-    }
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Умножение чисел в столбик</title>
+</head>
+<body>
+    <h1>Умножение чисел в столбик</h1>
+    <form method="post">
+        <label for="num1">Число 1: </label>
+        <input type="number" name="num1" id="num1">
+        <br>
+        <label for="num2">Число 2: </label>
+        <input type="number" name="num2" id="num2">
+        <br>
+        <input type="submit" value="Умножить">
+    </form>
 
-?>
+    <?php
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Получаем числа из формы
+        $num1 = isset($_POST['num1']) ? intval($_POST['num1']) : 0;
+        $num2 = isset($_POST['num2']) ? intval($_POST['num2']) : 0;
+
+        // Выполняем умножение
+        $result = $num1 * $num2;
+
+        // Выводим процесс умножения в столбик
+        echo '<h2>Процесс умножения:</h2>';
+        echo '<pre>';
+        echo '   ' . $num1 . '<br>';
+        echo '× ' . $num2 . '<br>';
+        echo '–––––<br>';
+        $product = $num1 * ($num2 % 10);
+        echo '   ' . $product . '<br>';
+        echo '–––––<br>';
+        $carry = floor($num2 / 10);
+        if ($carry > 0) {
+            $product = $num1 * $carry;
+            echo '  ' . $product . '<br>';
+        }
+        echo '–––––<br>';
+        echo '   ' . $result . '<br>';
+        echo '</pre>';
+    }
+    ?>
+</body>
+</html>
